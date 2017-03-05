@@ -1,1 +1,3 @@
-console.log('Hello World 1');
+import css from '../css/app.css';
+
+console.log('Hello World 2');
