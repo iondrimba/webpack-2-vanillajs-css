@@ -14,6 +14,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     historyApiFallback: true,
+    hot: true,
     port: 9000,
     watchContentBase: true
   },
@@ -65,6 +66,7 @@ module.exports = {
   context: __dirname,
   stats: "errors-only",
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: ["common"],
       filename: "webpack.js",
