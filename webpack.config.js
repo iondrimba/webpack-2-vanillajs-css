@@ -17,7 +17,7 @@ var config = {
     publicPath: "",
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
+    contentBase: [path.join(__dirname, 'public'), path.join(__dirname, 'src/index.html')],
     historyApiFallback: true,
     hot: true,
     port: 9000,
