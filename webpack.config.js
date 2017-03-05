@@ -57,6 +57,18 @@ var config = {
             loader: "html-loader"
           }
         ]
+      },
+      {
+        test: /\.(jpg|svg|png|gif|jpeg)?$/,
+        use: [
+          "file-loader",
+          {
+            loader: "file-loader",
+            options: {
+              name:"images/[name].[ext]"
+            }
+          }
+        ]
       }
     ],
   },
