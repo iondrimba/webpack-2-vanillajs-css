@@ -1,14 +1,19 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = {
+var isProduction = process.env.NODE_ENV == "production";
+
+console.log(isProduction);
+
+var config = {
   entry: {
     index: "./src/js/app.js"
   },
   output: {
     path: path.resolve(__dirname, "public"),
-    filename: "bundle.js",
+    filename: "js/[name].js",
     publicPath: "",
   },
   devServer: {
@@ -16,20 +21,11 @@ module.exports = {
     historyApiFallback: true,
     hot: true,
     port: 9000,
-    watchContentBase: true
+    watchContentBase: !isProduction
   },
 
   module: {
     rules: [
-      {
-        test: /\.js?$/,
-        include: [
-          path.resolve(__dirname, "src")
-        ],
-        exclude: [
-          path.resolve(__dirname, "node_modules")
-        ]
-      },
       {
         test: /\.css$/,
         use: [
@@ -43,6 +39,15 @@ module.exports = {
               localIdentName: '[local]'
             }
           }]
+      },
+      {
+        test: /\.js?$/,
+        include: [
+          path.resolve(__dirname, "src")
+        ],
+        exclude: [
+          path.resolve(__dirname, "node_modules")
+        ]
       },
       {
         test: "\.html$",
@@ -69,27 +74,39 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: ["common"],
-      filename: "webpack.js",
+      filename: "js/webpack.js",
       minChunks: Infinity,
     }),
     new HtmlWebpackPlugin({
       title: 'My App',
       template: './src/index.html',
       filename: 'index.html'
-    }),
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
-      DEBUG: true
-    }),
-    new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(true),
-      VERSION: JSON.stringify("1"),
-      BROWSER_SUPPORTS_HTML5: true,
-      TWO: "1+1",
-      "typeof window": JSON.stringify("object")
     })
   ],
   bail: true,
-  cache: false,
-  watch: true,
+  cache: isProduction,
+  watch: !isProduction,
 }
+
+if (isProduction) {
+  config.module.rules.shift();
+  config.module.rules.push({
+    test: /\.css$/,
+    use: ExtractTextPlugin.extract({
+      fallback: "style-loader",
+      use: "css-loader"
+    })
+  })
+  config.plugins.push(new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify('production')
+    }
+  }))
+  config.plugins.push(new webpack.LoaderOptionsPlugin({
+    minimize: true,
+    debug: false
+  }))
+  config.plugins.push(new ExtractTextPlugin({ filename: 'css/[name].css' }))
+}
+
+module.exports = config;
