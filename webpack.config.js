@@ -2,10 +2,8 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+var CopyWebpackPlugin = require("copy-webpack-plugin");
 var isProduction = process.env.NODE_ENV == "production";
-
-console.log(isProduction);
 
 var config = {
   entry: {
@@ -65,7 +63,7 @@ var config = {
           {
             loader: "file-loader",
             options: {
-              name:"images/[name].[ext]"
+              name: "images/[name].[ext]"
             }
           }
         ]
@@ -84,6 +82,10 @@ var config = {
   stats: "errors-only",
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new CopyWebpackPlugin([
+      { from: 'src/images', to: 'images' },
+      { from: 'src/fonts/', to: 'fonts' },
+    ]),
     new webpack.optimize.CommonsChunkPlugin({
       name: ["common"],
       filename: "js/webpack.js",
