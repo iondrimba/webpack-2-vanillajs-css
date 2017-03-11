@@ -1,4 +1,13 @@
+@font-face {
+  font-family: 'abeezee';
+  font-style: normal;
+  font-weight: normal;
+  src: url('/fonts/regular.woff2') format('woff2'),
+  url('/fonts/regular.woff') format('woff');
+}
+
 body {
   background-color: darkslateblue;
   color: #fff;
+  font-family: 'abeezee', sans-serif;
 }

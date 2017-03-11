@@ -67,6 +67,18 @@ var config = {
             }
           }
         ]
+      },
+      {
+        test: /\.(woff2|woff)?$/,
+        use: [
+          "file-loader",
+          {
+            loader: "file-loader",
+            options: {
+              name: "fonts/[name].[ext]"
+            }
+          }
+        ]
       }
     ],
   },
