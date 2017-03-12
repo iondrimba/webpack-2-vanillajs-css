@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
+var autoprefixer = require("autoprefixer");
 var isProduction = process.env.NODE_ENV == "production";
 
 var config = {
@@ -26,17 +27,22 @@ var config = {
     rules: [
       {
         test: /\.css$/,
-        use: [
-          {
-            loader: "style-loader"
-          },
-          {
-            loader: "css-loader", options: {
-              modules: true,
-              sourceMap: true,
-              localIdentName: '[local]'
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          loader: [
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                sourceMap: true,
+                localIdentName: '[local]'
+              },
+            },
+            {
+              loader: 'postcss-loader'
             }
-          }]
+          ],
+        })
       },
       {
         test: /\.js?$/,
@@ -93,7 +99,18 @@ var config = {
   context: __dirname,
   stats: "errors-only",
   plugins: [
+    new ExtractTextPlugin({ filename: 'css/[name].css', disable: !isProduction }),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.LoaderOptionsPlugin({
+       context: __dirname,
+        options: {
+            postcss: [
+                autoprefixer({
+                    browsers: ['last 4 version']
+                })
+            ]
+        }
+    }),
     new CopyWebpackPlugin([
       { from: 'src/images', to: 'images' },
       { from: 'src/fonts/', to: 'fonts' },
@@ -115,14 +132,6 @@ var config = {
 }
 
 if (isProduction) {
-  config.module.rules.shift();
-  config.module.rules.push({
-    test: /\.css$/,
-    use: ExtractTextPlugin.extract({
-      fallback: "style-loader",
-      use: "css-loader"
-    })
-  })
   config.plugins.push(new webpack.DefinePlugin({
     'process.env': {
       'NODE_ENV': JSON.stringify('production')
@@ -132,7 +141,6 @@ if (isProduction) {
     minimize: true,
     debug: false
   }))
-  config.plugins.push(new ExtractTextPlugin({ filename: 'css/[name].css' }))
 }
 
 module.exports = config;

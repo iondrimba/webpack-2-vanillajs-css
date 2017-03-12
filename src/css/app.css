@@ -9,5 +9,11 @@
 body {
   background-color: darkslateblue;
   color: #fff;
+  display: flex;
+  flex-direction: column;
   font-family: 'abeezee', sans-serif;
+}
+
+img {
+  width: 100%;
 }
