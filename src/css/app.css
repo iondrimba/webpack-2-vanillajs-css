@@ -11,9 +11,12 @@ body {
   color: #fff;
   display: flex;
   flex-direction: column;
-  font-family: 'abeezee', sans-serif;
+  font-family: 'abeezee';
 }
 
+h1 {
+  font-family: 'abeezee';
+}
 img {
   width: 100%;
 }
