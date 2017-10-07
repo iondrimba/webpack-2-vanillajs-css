@@ -58,7 +58,7 @@ var config = {
         ]
       },
       {
-        test: '\.html$',
+        test: /\.html?$/,
         use: [
           'htmllint-loader',
           {
